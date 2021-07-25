@@ -49,10 +49,10 @@
 #' system('git commit -m "mycommit2"')
 #'
 #' # now we can try `findInGit`
-#' findInGit(ext = "js", pattern = "ansi")
+#' \donttest{findInGit(ext = "js", pattern = "ansi")}
 #'
 #' # get results in a dataframe:
-#' findInGit(ext = "js", pattern = "ansi", output = "dataframe")
+#' \donttest{findInGit(ext = "js", pattern = "ansi", output = "dataframe")}
 #'
 #' # one can also get the widget and the dataframe:
 #' fig <- findInGit(ext = "css", pattern = "color", output = "viewer+dataframe")
