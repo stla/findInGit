@@ -104,8 +104,14 @@ ui <- fluidPage(
   )
 )
 
+Clean <- function(){
+  setwd(cd)
+  unlink(tmpDir, recursive = TRUE, force = TRUE)
+}
 
 server <- function(input, output){
+
+  onSessionEnded(Clean)
 
   output[["results"]] <- renderFIG({
     req(input[["pattern"]])
@@ -121,5 +127,7 @@ server <- function(input, output){
 
 if(interactive()){
   shinyApp(ui, server)
+}else{
+  Clean()
 }
 }
