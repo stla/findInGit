@@ -120,7 +120,11 @@ findInGit <- function(
     }
   }
 
-  ansi <- paste0(results, collapse = "\n")
+  if(is.null(results)){
+    ansi <- "No results."
+  }else{
+    ansi <- paste0(results, collapse = "\n")
+  }
 
   # forward options using x
   if(output == "viewer"){
