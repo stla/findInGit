@@ -112,7 +112,7 @@ findInGit <- function(
     strippedResults <- str_replace(strippedResults, "~~", ":.")
     resultsMatrix <- stringr::str_split_fixed(strippedResults, ":", n = 4L)
     colnames(resultsMatrix) <- c("branch", "file", "line", "code")
-    resultsDF <- as.data.frame(resultsMatrix)
+    resultsDF <- as.data.frame(resultsMatrix, stringsAsFactors = FALSE)
     resultsDF[["line"]] <- as.integer(resultsDF[["line"]])
     class(resultsDF) <- c(oldClass(resultsDF), "findInGit")
     if(output == "dataframe"){
