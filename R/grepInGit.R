@@ -104,9 +104,9 @@ grepInGit <- function(
   }
   setwd(wd)
   if(output == "dataframe"){
-    opts <- c("--colour=never", "-n")
+    opts <- c("--colour=never", "-n", "--with-filename")
   }else{
-    opts <- c("--colour=always", "-n")
+    opts <- c("--colour=always", "-n", "--with-filename")
   }
   if(wholeWord) opts <- c(opts, "-w")
   if(ignoreCase) opts <- c(opts, "-i")
@@ -128,13 +128,18 @@ grepInGit <- function(
   files <- unlist(Files, use.names = FALSE)
   l <- str_locate(files[1], "BRANCH")[1L, "start"]
   files <- substring(files, l)
-  # cat("files:\n")
-  # print(head(files))
+
+  cat("files:\n")
+  print(head(files))
+
   results <- suppressWarnings(system2(
     command,
     args = c(shQuote(pattern), shQuote(files), opts),
     stdout = TRUE, stderr = TRUE
   ))
+
+  cat("results:\n")
+  print(results)
 
   if(!is.null(status <- attr(results, "status"))){
     if(status == 1){
