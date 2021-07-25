@@ -26,7 +26,6 @@ HTMLWidgets.widget({
             .replace("~~", '~</span>');
         }
         html = lines.join("<br/>");
-        console.log("html", html);
         el.innerHTML = html;
       },
 

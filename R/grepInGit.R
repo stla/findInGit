@@ -56,7 +56,8 @@ getFilesInAllBranches <- function(path, ext){
   wd <- setwd(path)
   on.exit(setwd(wd))
   gitRoot <- getGitRoot()
-  setwd(gitRoot)
+  message("Root git directory: ", gitRoot)
+  #setwd(gitRoot)
   tmpDir <- tempdir()
   if(dir.exists(tmpDir)){
     unlink(tmpDir, recursive = TRUE)
