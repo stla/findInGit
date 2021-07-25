@@ -75,8 +75,6 @@ findInGit <- function(
     }
   }
 
-  # ansi <- str_replace(results, "~~", '~<span style="color:yellow;">')
-  # ansi <- str_replace(ansi, "~~", "</span>")
   ansi <- paste0(results, collapse = "\n")
 
   # forward options using x
@@ -103,32 +101,32 @@ findInGit <- function(
 
 }
 
-#' Output of `findInFiles` as a dataframe
+#' Output of `findInGit` as a dataframe
 #'
-#' Returns the results of \code{\link{findInFiles}} in a dataframe, when the
+#' Returns the results of \code{\link{findInGit}} in a dataframe, when the
 #'   option \code{output = "viewer+dataframe"} is used.
 #'
-#' @param fif the output of \code{\link{findInFiles}} used with the
+#' @param fig the output of \code{\link{findInGit}} used with the
 #'   option \code{output = "viewer+dataframe"}
 #'
-#' @return The results of \code{\link{findInFiles}} in a dataframe.
+#' @return The results of \code{\link{findInGit}} in a dataframe.
 #' @export
 #'
 #' @examples folder <- system.file("example", package = "findInFiles")
 #' fif <- findInFiles("R", "function", root = folder, output = "viewer+dataframe")
 #' FIF2dataframe(fif)
 #' fif
-FIF2dataframe <- function(fif){
-  if(is.data.frame(fif) && inherits(fif, "findInFiles")){
-    return(fif)
+FIG2dataframe <- function(fig){
+  if(is.data.frame(fig) && inherits(fig, "findInGit")){
+    return(fig)
   }
-  if(!inherits(fif, c("findInFiles", "htmlwidget"))){
+  if(!inherits(fig, c("findInGit", "htmlwidget"))){
     stop(
-      "The `fif` argument is not a output of `findInFiles`.",
+      "The `fig` argument is not a output of `findInGit`.",
       call. = TRUE
     )
   }
-  output <- fif[["x"]][["results"]]
+  output <- fig[["x"]][["results"]]
   if(is.null(output)){
     message(
       'You did not set the option `output = "viewer+dataframe"`.'
@@ -139,21 +137,21 @@ FIF2dataframe <- function(fif){
 }
 
 
-#' Shiny bindings for \code{findInFiles}
+#' Shiny bindings for \code{findInGit}
 #'
-#' Output and render functions for using \code{findInFiles} within Shiny
+#' Output and render functions for using \code{findInGit} within Shiny
 #' applications and interactive Rmd documents.
 #'
 #' @param outputId output variable to read from
 #' @param width,height a valid CSS unit (like \code{"100\%"},
 #'   \code{"400px"}, \code{"auto"}) or a number, which will be coerced to a
 #'   string and have \code{"px"} appended
-#' @param expr an expression that generates a '\code{\link{findInFiles}}' widget
+#' @param expr an expression that generates a '\code{\link{findInGit}}' widget
 #' @param env the environment in which to evaluate \code{expr}
 #' @param quoted logical, whether \code{expr} is a quoted expression (with
 #'   \code{quote()})
 #'
-#' @name findInFiles-shiny
+#' @name findInGit-shiny
 #'
 #' @export
 #'
@@ -229,15 +227,15 @@ FIF2dataframe <- function(fif){
 #' if(interactive()){
 #'   shinyApp(ui, server)
 #' }
-FIFOutput <- function(outputId, width = "100%", height = "400px"){
+FIGOutput <- function(outputId, width = "100%", height = "400px"){
   htmlwidgets::shinyWidgetOutput(
-    outputId, "findInFiles", width, height, package = "findInFiles"
+    outputId, "findInGit", width, height, package = "findInGit"
   )
 }
 
-#' @rdname findInFiles-shiny
+#' @rdname findInGit-shiny
 #' @export
-renderFIF <- function(expr, env = parent.frame(), quoted = FALSE){
+renderFIG <- function(expr, env = parent.frame(), quoted = FALSE){
   if(!quoted){ expr <- substitute(expr) } # force quoted
-  htmlwidgets::shinyRenderWidget(expr, FIFOutput, env, quoted = TRUE)
+  htmlwidgets::shinyRenderWidget(expr, FIGOutput, env, quoted = TRUE)
 }
