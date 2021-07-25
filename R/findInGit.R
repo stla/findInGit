@@ -19,7 +19,7 @@
 #'   \code{htmlwidget} object.
 #'
 #' @import htmlwidgets
-#' @importFrom stringr str_split_fixed
+#' @importFrom stringr str_split_fixed str_remove str_replace
 #' @importFrom crayon strip_style
 #' @export
 #'
@@ -63,11 +63,13 @@ findInGit <- function(
     }else{
       strippedResults <- results
     }
-    resultsMatrix <- stringr::str_split_fixed(strippedResults, ":", n = 3L)
-    colnames(resultsMatrix) <- c("file", "line", "code")
+    strippedResults <- str_remove(strippedResults, "^BRANCH~~")
+    strippedResults <- str_replace(strippedResults, "~~", ":.")
+    resultsMatrix <- stringr::str_split_fixed(strippedResults, ":", n = 4L)
+    colnames(resultsMatrix) <- c("branch", "file", "line", "code")
     resultsDF <- as.data.frame(resultsMatrix)
     resultsDF[["line"]] <- as.integer(resultsDF[["line"]])
-    class(resultsDF) <- c(oldClass(resultsDF), "findInFiles")
+    class(resultsDF) <- c(oldClass(resultsDF), "findInGit")
     if(output == "dataframe"){
       return(resultsDF)
     }
