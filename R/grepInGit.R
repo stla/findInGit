@@ -121,7 +121,7 @@ grepInGit <- function(
   wd <- setwd(tmpDir)
   on.exit(setwd(wd))
   files <- unlist(Files, use.names = FALSE)
-  l <- stringr::str_locate(files[1], "BRANCH")[1L, "start"]
+  l <- str_locate(files[1], "BRANCH")[1L, "start"]
   files <- substring(files, l)
   # cat("files:\n")
   # print(head(files))
