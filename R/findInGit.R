@@ -47,6 +47,13 @@ findInGit <- function(
     return(invisible(NULL))
   }
 
+  if(isBinaryExtension(ext)){
+    stop(
+      sprintf("Invalid file extension '%s' (binary file).", ext),
+      call. = TRUE
+    )
+  }
+
   output <- match.arg(output, c("viewer", "dataframe", "viewer+dataframe"))
 
   results <- grepInGit(
