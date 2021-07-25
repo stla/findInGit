@@ -1,4 +1,4 @@
-The 'findInFiles' package as a whole is distributed under GPL-3 (GNU GENERAL
+The 'findInGit' package as a whole is distributed under GPL-3 (GNU GENERAL
 PUBLIC LICENSE version 3).
 
 It includes the JavaScript library 'ansi-to-html' (https://github.com/rburns/ansi-to-html).
