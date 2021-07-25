@@ -1,0 +1,11 @@
+div.findInFiles {
+  color: white;
+  background-color: #002;
+  overflow: auto;
+  outline: 5px solid #002;
+}
+
+div.findInFiles:empty {
+  background-color: transparent;
+  outline: none;
+}
