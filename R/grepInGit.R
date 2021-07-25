@@ -35,19 +35,21 @@ getFilesInBranch <- function(tmpDir, branch, ext){
   folder <- file.path(tmpDir, sprintf("BRANCH__%s__", branch))
   dir.create(folder)
   filenames <- getFilenamesInBranch(branch, ext)
+  Paths <- NULL
   for(f in filenames){
     args <- sprintf("show %s:./%s", branch, f)
     file <- suppressWarnings(
       system2("git", args, stdout = TRUE, stderr = TRUE)
     )
     path <- file.path(folder, f)
+    Paths <- c(Paths, path)
     branchFolder <- dirname(path)
     if(!dir.exists(branchFolder)){
       dir.create(branchFolder, recursive = TRUE)
     }
     writeLines(file, path)
   }
-  invisible(NULL)
+  Paths
 }
 
 getFilesInAllBranches <- function(path, ext){
@@ -59,8 +61,11 @@ getFilesInAllBranches <- function(path, ext){
   cat("tmpDir:\n")
   print(tmpDir)
   branches <- getBranches()
+  Files <- vector("list", length(branches))
+  names(Files) <- branches
   for(branch in branches){
-    getFilesInBranch(tmpDir, branch, ext)
+    x <- getFilesInBranch(tmpDir, branch, ext)
+    Files[[branch]] <- x
   }
-  invisible(NULL)
+  Files
 }
