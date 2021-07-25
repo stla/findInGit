@@ -115,7 +115,7 @@ server <- function(input, output){
 
   output[["results"]] <- renderFIG({
     req(input[["pattern"]])
-    findInFiles(
+    findInGit(
       ext = isolate(input[["ext"]]),
       pattern = input[["pattern"]],
       wholeWord = isolate(input[["wholeWord"]]),
