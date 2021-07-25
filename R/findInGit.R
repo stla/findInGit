@@ -73,6 +73,8 @@ findInGit <- function(
     }
   }
 
+  # ansi <- str_replace(results, "~~", '~<span style="color:yellow;">')
+  # ansi <- str_replace(ansi, "~~", "</span>")
   ansi <- paste0(results, collapse = "\n")
 
   # forward options using x

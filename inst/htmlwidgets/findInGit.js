@@ -7,7 +7,6 @@ HTMLWidgets.widget({
   factory: function(el, width, height) {
 
     var ANSItoHTML = require('ansi-to-html');
-    console.log("ANSItoHTML", ANSItoHTML);
 
     return {
 
@@ -20,7 +19,13 @@ HTMLWidgets.widget({
           stream: false
         });
         var html = convert.toHtml(x.ansi);
-        console.log("ansi", x.ansi);
+        var lines = html.split("<br/>");
+        for(var i = 0; i < lines.length; i++){
+          lines[i] = lines[i]
+            .replace("BRANCH~~", '<span style="color:yellow;">~')
+            .replace("~~", '~</span>');
+        }
+        html = lines.join("<br/>");
         console.log("html", html);
         el.innerHTML = html;
       },

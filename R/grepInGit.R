@@ -32,7 +32,7 @@ getFilenamesInBranch <- function(branch, ext){
 }
 
 getFilesInBranch <- function(tmpDir, branch, ext){
-  folder <- file.path(tmpDir, sprintf("BRANCH__%s__", branch))
+  folder <- file.path(tmpDir, sprintf("BRANCH~~%s~~", branch))
   dir.create(folder, recursive = TRUE)
   filenames <- getFilenamesInBranch(branch, ext)
   Paths <- NULL
@@ -96,8 +96,12 @@ grepInGit <- function(
   stopifnot(isBoolean(wholeWord))
   stopifnot(isBoolean(ignoreCase))
   stopifnot(isBoolean(perl))
-  # wd <- setwd(directory)
-  # on.exit(setwd(wd))
+  wd <- setwd(directory)
+  if(!isGitRepo()){
+    setwd(wd)
+    stop("Not a git repository", call. = FALSE)
+  }
+  setwd(wd)
   if(output == "dataframe"){
     opts <- c("--colour=never", "-n")
   }else{
