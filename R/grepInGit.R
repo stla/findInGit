@@ -33,7 +33,7 @@ getFilenamesInBranch <- function(branch, ext){
 
 getFilesInBranch <- function(tmpDir, branch, ext){
   folder <- file.path(tmpDir, sprintf("BRANCH__%s__", branch))
-  dir.create(folder)
+  dir.create(folder, recursive = TRUE)
   filenames <- getFilenamesInBranch(branch, ext)
   Paths <- NULL
   for(f in filenames){
@@ -58,8 +58,11 @@ getFilesInAllBranches <- function(path, ext){
   gitRoot <- getGitRoot()
   setwd(gitRoot)
   tmpDir <- tempdir()
-  cat("tmpDir:\n")
-  print(tmpDir)
+  if(dir.exists(tmpDir)){
+    unlink(tmpDir, recursive = TRUE)
+    tmpDir <- tempdir()
+  }
+  message("Temporary directory: ", tmpDir)
   branches <- getBranches()
   Files <- vector("list", length(branches))
   names(Files) <- branches
@@ -67,5 +70,74 @@ getFilesInAllBranches <- function(path, ext){
     x <- getFilesInBranch(tmpDir, branch, ext)
     Files[[branch]] <- x
   }
+  attr(Files, "tmpDir") <- tmpDir
   Files
+}
+
+#' @importFrom stringr str_locate
+#' @noRd
+grepInGit <- function(
+  ext, pattern,
+  wholeWord, ignoreCase, perl,
+  excludePattern, excludeFoldersPattern,
+  directory, output
+){
+  if(inSolaris()){
+    if(Sys.which("ggrep") == ""){
+      stop("This package requires the 'ggrep' command-line utility.")
+    }
+  }else{
+    if(Sys.which("grep") == ""){
+      stop("This package requires the 'grep' command-line utility.")
+    }
+  }
+  stopifnot(isString(ext))
+  stopifnot(isString(pattern))
+  stopifnot(isBoolean(wholeWord))
+  stopifnot(isBoolean(ignoreCase))
+  stopifnot(isBoolean(perl))
+  # wd <- setwd(directory)
+  # on.exit(setwd(wd))
+  if(output == "dataframe"){
+    opts <- c("--colour=never", "-n")
+  }else{
+    opts <- c("--colour=always", "-n")
+  }
+  if(wholeWord) opts <- c(opts, "-w")
+  if(ignoreCase) opts <- c(opts, "-i")
+  if(perl) opts <- c(opts, "-P")
+  if(!is.null(excludePattern)){
+    stopifnot(isString(excludePattern))
+    opts <- c(opts, paste0("--exclude=", shQuote(excludePattern)))
+  } #TODO: multiple patterns - https://stackoverflow.com/questions/41702134/grep-exclude-from-how-to-include-multiple-files
+  if(!is.null(excludeFoldersPattern)){
+    stopifnot(isString(excludeFoldersPattern))
+    opts <- c(opts, paste0("--exclude-dir=", shQuote(excludeFoldersPattern)))
+  }
+  command <- ifelse(inSolaris(), "ggrep", "grep")
+
+  Files <- getFilesInAllBranches(directory, ext)
+  tmpDir <- attr(Files, "tmpDir")
+  wd <- setwd(tmpDir)
+  on.exit(setwd(wd))
+  files <- unlist(Files, use.names = FALSE)
+  l <- stringr::str_locate(files[1], "BRANCH")[1L, "start"]
+  files <- substring(files, l)
+  # cat("files:\n")
+  # print(head(files))
+  results <- suppressWarnings(system2(
+    command,
+    args = c(shQuote(pattern), shQuote(files), opts),
+    stdout = TRUE, stderr = TRUE
+  ))
+
+  if(!is.null(status <- attr(results, "status"))){
+    if(status == 1){
+      message("No results.")
+      return(invisible(NULL))
+    }else{
+      stop("An error occured. Possibly invalid 'grep' command.")
+    }
+  }
+  results
 }
