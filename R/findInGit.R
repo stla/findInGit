@@ -23,18 +23,46 @@
 #' @importFrom crayon strip_style
 #' @export
 #'
-#' @examples library(findInFiles)
-#' folder <- system.file("example", package = "findInFiles")
-#' findInFiles("R", "function", root = folder)
+#' @examples library(findInGit)
+#' library(R.utils) # to use the `copyDirectory` function
+#' folder1 <- system.file("htmlwidgets", package = "findInGit")
+#' folder2 <- system.file("htmlwidgets", "lib", package = "findInGit")
+#' tmpDir <- paste0(tempdir(), "_gitrepo")
+#' dir.create(tmpDir)
+#' # set tmpDir as the working directory
+#' cd <- setwd(tmpDir)
+#' # copy folder1 in tmpDir
+#' copyDirectory(folder1, recursive = FALSE)
+#' # initialize git repo
+#' system("git init")
+#' # add all files to git
+#' system("git add -A")
+#' # commit files
+#' system('git commit -m "mycommit1"')
+#' # create a new branch
+#' system("git checkout -b newbranch")
+#' # copy folder2 in tmpDir, under the new branch
+#' copyDirectory(folder2, recursive = FALSE)
+#' # add all files to git
+#' system("git add -A")
+#' # commit files
+#' system('git commit -m "mycommit2"')
 #'
-#' findInFiles("R", "function", root = folder, output = "dataframe")
+#' # now we can try `findInGit`
+#' findInGit(ext = "js", pattern = "ansi")
 #'
-#' fif <- findInFiles("R", "function", root = folder, output = "viewer+dataframe")
-#' FIF2dataframe(fif)
-#' fif
+#' # get results in a dataframe:
+#' findInGit(ext = "js", pattern = "ansi", output = "dataframe")
 #'
-#' folder <- system.file("www", "shared", package = "shiny")
-#' findInFiles("css", "outline", excludePattern = "*.min.css", root = folder)
+#' # one can also get the widget and the dataframe:
+#' fig <- findInGit(ext = "css", pattern = "color", output = "viewer+dataframe")
+#' fig
+#' FIG2dataframe(fig)
+#'
+#' # return to initial current directory
+#' setwd(cd)
+#' # delete tmpDir
+#' unlink(tmpDir, recursive = TRUE, force = TRUE)
 findInGit <- function(
   ext, pattern,
   wholeWord = FALSE, ignoreCase = FALSE, perl = FALSE,
@@ -121,18 +149,14 @@ findInGit <- function(
 #' Output of `findInGit` as a dataframe
 #'
 #' Returns the results of \code{\link{findInGit}} in a dataframe, when the
-#'   option \code{output = "viewer+dataframe"} is used.
+#'   option \code{output = "viewer+dataframe"} is used. See the example in
+#'   \code{\link{findInGit}}.
 #'
 #' @param fig the output of \code{\link{findInGit}} used with the
 #'   option \code{output = "viewer+dataframe"}
 #'
 #' @return The results of \code{\link{findInGit}} in a dataframe.
 #' @export
-#'
-#' @examples folder <- system.file("example", package = "findInFiles")
-#' fif <- findInFiles("R", "function", root = folder, output = "viewer+dataframe")
-#' FIF2dataframe(fif)
-#' fif
 FIG2dataframe <- function(fig){
   if(is.data.frame(fig) && inherits(fig, "findInGit")){
     return(fig)
@@ -172,9 +196,35 @@ FIG2dataframe <- function(fig){
 #'
 #' @export
 #'
-#' @examples library(findInFiles)
+#' @examples library(findInGit)
 #' library(shiny)
 #'
+#' # First, we create a temporary git repo
+#' library(R.utils) # to use the `copyDirectory` function
+#' folder1 <- system.file("htmlwidgets", package = "findInGit")
+#' folder2 <- system.file("htmlwidgets", "lib", package = "findInGit")
+#' tmpDir <- paste0(tempdir(), "_gitrepo")
+#' dir.create(tmpDir)
+#' # set tmpDir as the working directory
+#' cd <- setwd(tmpDir)
+#' # copy folder1 in tmpDir
+#' copyDirectory(folder1, recursive = FALSE)
+#' # initialize git repo
+#' system("git init")
+#' # add all files to git
+#' system("git add -A")
+#' # commit files
+#' system('git commit -m "mycommit1"')
+#' # create a new branch
+#' system("git checkout -b newbranch")
+#' # copy folder2 in tmpDir, under the new branch
+#' copyDirectory(folder2, recursive = FALSE)
+#' # add all files to git
+#' system("git add -A")
+#' # commit files
+#' system('git commit -m "mycommit2"')
+#'
+#' # Now let's play with Shiny
 #' onKeyDown <- HTML(
 #'   'function onKeyDown(event) {',
 #'   '  var key = event.which || event.keyCode;',
@@ -193,7 +243,7 @@ FIG2dataframe <- function(fig){
 #'     sidebarPanel(
 #'       selectInput(
 #'         "ext", "Extension",
-#'         choices = c("R", "js", "css")
+#'         choices = c("js", "css")
 #'       ),
 #'       tags$div(
 #'         class = "form-group shiny-input-container",
@@ -208,10 +258,6 @@ FIG2dataframe <- function(fig){
 #'           placeholder = "Press Enter when ready"
 #'         )
 #'       ),
-#'       numericInput(
-#'         "depth", "Depth (set -1 for unlimited depth)",
-#'         value = 0, min = -1, step = 1
-#'       ),
 #'       checkboxInput(
 #'         "wholeWord", "Whole word"
 #'       ),
@@ -220,7 +266,7 @@ FIG2dataframe <- function(fig){
 #'       )
 #'     ),
 #'     mainPanel(
-#'       FIFOutput("results")
+#'       FIGOutput("results")
 #'     )
 #'   )
 #' )
@@ -228,12 +274,11 @@ FIG2dataframe <- function(fig){
 #'
 #' server <- function(input, output){
 #'
-#'   output[["results"]] <- renderFIF({
+#'   output[["results"]] <- renderFIG({
 #'     req(input[["pattern"]])
 #'     findInFiles(
 #'       ext = isolate(input[["ext"]]),
 #'       pattern = input[["pattern"]],
-#'       depth = isolate(input[["depth"]]),
 #'       wholeWord = isolate(input[["wholeWord"]]),
 #'       ignoreCase = isolate(input[["ignoreCase"]])
 #'     )
