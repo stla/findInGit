@@ -47,6 +47,16 @@ findInGit <- function(
     return(invisible(NULL))
   }
 
+  if(!inSolaris() && Sys.which("grep") == ""){
+    message("This package requires the 'grep' system command.")
+    return(invisible(NULL))
+  }
+
+  if(Sys.which("git") == ""){
+    message("This package requires the 'git' system command.")
+    return(invisible(NULL))
+  }
+
   if(isBinaryExtension(ext)){
     stop(
       sprintf("Invalid file extension '%s' (binary file).", ext),
