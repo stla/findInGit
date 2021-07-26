@@ -86,6 +86,7 @@ findInGit <- function(
     return(invisible(NULL))
   }
 
+  stopifnot(isString(ext))
   if(isBinaryExtension(ext)){
     stop(
       sprintf("Invalid file extension '%s' (binary file).", ext),
@@ -111,7 +112,7 @@ findInGit <- function(
     }
     strippedResults <- str_remove(strippedResults, "^BRANCH~~")
     strippedResults <- str_replace(strippedResults, "~~", ":.")
-    resultsMatrix <- stringr::str_split_fixed(strippedResults, ":", n = 4L)
+    resultsMatrix <- str_split_fixed(strippedResults, ":", n = 4L)
     colnames(resultsMatrix) <- c("branch", "file", "line", "code")
     resultsDF <- as.data.frame(resultsMatrix, stringsAsFactors = FALSE)
     resultsDF[["line"]] <- as.integer(resultsDF[["line"]])

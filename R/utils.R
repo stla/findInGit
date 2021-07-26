@@ -267,5 +267,5 @@ isBinaryExtension <- function(ext){
     "zip",
     "zipx"
   )
-  ext %in% binaryExtensions
+  tolower(ext) %in% binaryExtensions
 }

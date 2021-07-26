@@ -1,7 +1,4 @@
 isGitRepo <- function(){
-  # folders <- list.dirs(path, recursive = FALSE, full.names = FALSE)
-  # wd <- setwd(path)
-  # on.exit(setwd(wd))
   check <- suppressWarnings(
     system2("git", "status", stdout = FALSE, stderr = TRUE)
   )
@@ -122,6 +119,13 @@ grepInGit <- function(
   command <- ifelse(inSolaris(), "ggrep", "grep")
 
   Files <- getFilesInAllBranches(directory, ext)
+  if(length(Files) == 0L){
+    message(
+      sprintf("\nNo file with the extension '%s' has been found.", ext)
+    )
+    return(invisible(NULL))
+  }
+
   tmpDir <- attr(Files, "tmpDir")
   wd <- setwd(tmpDir)
   on.exit(setwd(wd))
