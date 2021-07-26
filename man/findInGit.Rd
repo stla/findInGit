@@ -2,7 +2,7 @@
 % Please edit documentation in R/findInGit.R
 \name{findInGit}
 \alias{findInGit}
-\title{Find pattern in files}
+\title{Find pattern in files of a 'git' repository}
 \usage{
 findInGit(
   ext,
@@ -44,7 +44,8 @@ A dataframe if \code{output="dataframe"}, otherwise a
   \code{htmlwidget} object.
 }
 \description{
-Find a pattern in some files.
+Find a pattern in the files with a given extension, in all
+  branches of a 'git' repository.
 }
 \examples{
 library(findInGit)

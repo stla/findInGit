@@ -1,5 +1,6 @@
-#' Find pattern in files
-#' @description Find a pattern in some files.
+#' Find pattern in files of a 'git' repository
+#' @description Find a pattern in the files with a given extension, in all
+#'   branches of a 'git' repository.
 #'
 #' @param ext file extension, e.g. \code{"R"} or \code{"js"}
 #' @param pattern pattern to search for, a regular expression, e.g.
