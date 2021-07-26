@@ -30,13 +30,17 @@ getFilenamesInBranch <- function(branch, ext){
 
 getFilesInBranch <- function(tmpDir, branch, ext){
   folder <- file.path(tmpDir, sprintf("BRANCH~~%s~~", branch))
-  dir.create(folder, recursive = TRUE)
+  if(dir.exists(folder)){
+    unlink(folder, recursive = TRUE, force = TRUE)
+  }
+  suppressWarnings(dir.create(folder, recursive = TRUE))
   filenames <- getFilenamesInBranch(branch, ext)
   Paths <- NULL
   for(f in filenames){
     args <- sprintf("show %s:./%s", branch, f)
+    copyFile <- tempfile(fileext = ".txt")
     file <- suppressWarnings(
-      system2("git", args, stdout = TRUE, stderr = TRUE)
+      system2("git", args, stdout = copyFile, stderr = TRUE)
     )
     path <- file.path(folder, f)
     Paths <- c(Paths, path)
@@ -44,7 +48,8 @@ getFilesInBranch <- function(tmpDir, branch, ext){
     if(!dir.exists(branchFolder)){
       dir.create(branchFolder, recursive = TRUE)
     }
-    writeLines(file, path)
+    x <- file.rename(from = copyFile, to = path)
+    #writeLines(file, path, useBytes = TRUE)
   }
   Paths
 }
@@ -55,11 +60,11 @@ getFilesInAllBranches <- function(path, ext){
   gitRoot <- getGitRoot()
   message("Root git directory: ", gitRoot)
   #setwd(gitRoot)
-  tmpDir <- tempdir()
-  if(dir.exists(tmpDir)){
-    unlink(tmpDir, recursive = TRUE)
-    tmpDir <- tempdir()
-  }
+  tmpDir <- paste0(tempdir(), "_gitRepo")
+  # if(dir.exists(tmpDir)){
+  #   unlink(tmpDir, recursive = TRUE)
+  #   tmpDir <- paste0(tempdir(), "_gitRepo")
+  # }
   message("Temporary directory: ", tmpDir)
   branches <- getBranches()
   Files <- vector("list", length(branches))
@@ -127,6 +132,10 @@ grepInGit <- function(
   }
 
   tmpDir <- attr(Files, "tmpDir")
+  if(dir.exists(tmpDir)){
+    #unlink(tmpDir, recursive = TRUE, force = TRUE)
+  }
+  #dir.create(tmpDir)
   wd <- setwd(tmpDir)
   on.exit(setwd(wd))
   files <- unlist(Files, use.names = FALSE)
@@ -142,6 +151,7 @@ grepInGit <- function(
       message("No results.")
       return(invisible(NULL))
     }else{
+      print(results)
       stop("An error occured. Possibly invalid 'grep' command.")
     }
   }
