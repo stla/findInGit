@@ -198,6 +198,11 @@ FIG2dataframe <- function(fig){
 #' @param quoted logical, whether \code{expr} is a quoted expression (with
 #'   \code{quote()})
 #'
+#' @return \code{FIGOutput} returns an output element that can be included in a
+#'   Shiny UI definition, and \code{renderFIG} returns a
+#'   \code{shiny.render.function} object that can be included in a Shiny
+#'   server definition.
+#'
 #' @name findInGit-shiny
 #'
 #' @export

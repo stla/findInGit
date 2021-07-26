@@ -24,6 +24,12 @@ string and have \code{"px"} appended}
 \item{quoted}{logical, whether \code{expr} is a quoted expression (with
 \code{quote()})}
 }
+\value{
+\code{FIGOutput} returns an output element that can be included in a
+  Shiny UI definition, and \code{renderFIG} returns a
+  \code{shiny.render.function} object that can be included in a Shiny
+  server definition.
+}
 \description{
 Output and render functions for using \code{findInGit} within Shiny
 applications and interactive Rmd documents.
