@@ -1,4 +1,4 @@
-# findInGit 0.1.0.9000
+# findInGit 0.1.1
 
 Fixed a bug. The line numbers were not correct sometimes.
 
