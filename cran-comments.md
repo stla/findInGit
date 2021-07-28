@@ -1,6 +1,13 @@
-The CRAN checks detect an error on Solaris when running the examples, because 
-the 'git' command is not found. So I included `if(Sys.which("git") ! "")` in 
+1. The CRAN checks detect an error on Solaris when running the examples, because 
+the 'git' command is not found. So I included `if(Sys.which("git") != "")` in 
 the examples, to skip them if 'git' is not found.
+
+2. With the new version 0.1.1, the CRAN checks detect an error on Unix systems, 
+not on Windows systems. That's because I used `system2` with a file name for 
+the argument `stdout` and with `stderr=TRUE`. However, as written in the doc: 
+*Because of the way it is implemented, on a Unix-alike `stderr = TRUE` implies 
+`stdout = TRUE`*. So I set `stderr = ""`. I tested on a Linux system and it 
+works now.
 
 
 ## Test environments
