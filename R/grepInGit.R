@@ -40,7 +40,7 @@ getFilesInBranch <- function(tmpDir, branch, ext){
     args <- sprintf("show %s:./%s", branch, f)
     copyFile <- tempfile(fileext = ".txt")
     file <- suppressWarnings(
-      system2("git", args, stdout = copyFile, stderr = TRUE)
+      system2("git", args, stdout = copyFile, stderr = "")
     )
     path <- file.path(folder, f)
     Paths <- c(Paths, path)
