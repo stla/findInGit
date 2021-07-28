@@ -24,7 +24,10 @@
 #' @importFrom crayon strip_style
 #' @export
 #'
-#' @examples library(findInGit)
+#' @examples findGit <- Sys.which("git") != ""
+#' if(findGit){
+#'
+#' library(findInGit)
 #' library(R.utils) # to use the `copyDirectory` function
 #' folder1 <- system.file("htmlwidgets", package = "findInGit")
 #' folder2 <- system.file("htmlwidgets", "lib", package = "findInGit")
@@ -64,6 +67,8 @@
 #' setwd(cd)
 #' # delete tmpDir
 #' unlink(tmpDir, recursive = TRUE, force = TRUE)
+#'
+#' }
 findInGit <- function(
   ext, pattern,
   wholeWord = FALSE, ignoreCase = FALSE, perl = FALSE,
@@ -207,7 +212,10 @@ FIG2dataframe <- function(fig){
 #'
 #' @export
 #'
-#' @examples library(findInGit)
+#' @examples findGit <- Sys.which("git") != ""
+#' if(findGit){
+#'
+#' library(findInGit)
 #' library(shiny)
 #'
 #' # First, we create a temporary git repo
@@ -307,6 +315,8 @@ FIG2dataframe <- function(fig){
 #'   shinyApp(ui, server)
 #' }else{
 #'   Clean()
+#' }
+#'
 #' }
 FIGOutput <- function(outputId, width = "100%", height = "400px"){
   htmlwidgets::shinyWidgetOutput(

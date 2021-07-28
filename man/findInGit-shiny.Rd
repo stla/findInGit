@@ -35,6 +35,9 @@ Output and render functions for using \code{findInGit} within Shiny
 applications and interactive Rmd documents.
 }
 \examples{
+findGit <- Sys.which("git") != ""
+if(findGit){
+
 library(findInGit)
 library(shiny)
 
@@ -135,5 +138,7 @@ if(interactive()){
   shinyApp(ui, server)
 }else{
   Clean()
+}
+
 }
 }

@@ -48,6 +48,9 @@ Find a pattern in the files with a given extension, in all
   branches of a 'git' repository.
 }
 \examples{
+findGit <- Sys.which("git") != ""
+if(findGit){
+
 library(findInGit)
 library(R.utils) # to use the `copyDirectory` function
 folder1 <- system.file("htmlwidgets", package = "findInGit")
@@ -88,4 +91,6 @@ FIG2dataframe(fig)
 setwd(cd)
 # delete tmpDir
 unlink(tmpDir, recursive = TRUE, force = TRUE)
+
+}
 }
