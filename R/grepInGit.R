@@ -60,7 +60,7 @@ getFilesInAllBranches <- function(path, ext){
   gitRoot <- getGitRoot()
   message("Root git directory: ", gitRoot)
   #setwd(gitRoot)
-  tmpDir <- paste0(tempdir(), "_gitRepo")
+  tmpDir <- file.path(tempdir(), "gitRepo")
   # if(dir.exists(tmpDir)){
   #   unlink(tmpDir, recursive = TRUE)
   #   tmpDir <- paste0(tempdir(), "_gitRepo")

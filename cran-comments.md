@@ -9,6 +9,9 @@ the argument `stdout` and with `stderr=TRUE`. However, as written in the doc:
 `stdout = TRUE`*. So I set `stderr = ""`. I tested on a Linux system and it 
 works now.
 
+3. The CRAN checks return a NOTE, due to some detritus found. So I changed the 
+temporary directory I used to a subdirectory of a "true" R temporary directory.
+
 
 ## Test environments
 
